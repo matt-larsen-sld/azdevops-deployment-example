@@ -91,9 +91,25 @@ stages:
       tags: lhit11vm2
     strategy:
      runOnce:
-       deploy:
-        steps:
-          - 
+        preDeploy:
+          steps:
+            - bash: |
+                echo "preDeploy phase"
+                python3 -m pip install virtualenv --user
+        deploy:
+          steps:
+          - bash: |
+              echo "deploy phase"
+        on:
+          failure:
+            steps:
+            - bash: |
+                echo "failed"
+          success:
+            steps:
+            - bash: |
+                echo "success"
+          
 # - stage: Deploy
 #   displayName: Deploy stage
 #   dependsOn: Build
