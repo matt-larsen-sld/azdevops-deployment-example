@@ -88,7 +88,7 @@ stages:
     environment:
       name: Development
       resourceType: VirtualMachine
-      tags: lhit11vm2
+      tags: lhit11vms
     strategy:
      runOnce:
         preDeploy:
