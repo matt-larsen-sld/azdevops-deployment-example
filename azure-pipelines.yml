@@ -9,11 +9,20 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+- deployment: scheduled_task
+  displayName: Deploy script as scheduled task  
+  environment:
+    name: Development
+    resourceType: VirtualMachine
+    tags: development
+  strategy:
+   runOnce:
+     deploy:
+      steps:
+        - task: Bash@3
+          inputs:
+            targetType: inline
+            script: |
+              # Hello world
+              echo "Hello world."
