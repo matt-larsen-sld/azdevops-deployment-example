@@ -25,4 +25,4 @@ jobs:
             targetType: inline
             script: |
               # Hello world
-              echo "Hello world."
+              hostnamectl
