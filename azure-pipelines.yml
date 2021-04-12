@@ -56,4 +56,55 @@ stages:
             codeCoverageTool: Cobertura
             summaryFileLocation: '$(workingDirectory)/**/coverage.xml'
 
-          
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.8'
+      inputs:
+        versionSpec: 3.8
+
+    - bash: |
+        pip install --target $(workingDirectory)/.python_packages/lib/site-packages -r requirements.txt
+      workingDirectory: $(workingDirectory)
+      displayName: 'Install application dependencies'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(workingDirectory)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+# - stage: Deploy
+#   displayName: Deploy stage
+#   dependsOn: Build
+#   condition: succeeded()
+#
+#   jobs:
+#   - deployment: Deploy
+#     displayName: Deploy
+#     environment:
+#       name: Development
+#       resourceType: VirtualMachine
+#       tags: lhit11vms
+#
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - task:
+#
+#               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
