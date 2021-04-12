@@ -30,7 +30,7 @@ stages:
 
         - bash: |
             pip install pytest
-            pip instal pytest-cov
+            pip install pytest-cov
             pip install faker
           workingDirectory: $(workingDirectory)
           displayName: Install pytest

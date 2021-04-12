@@ -310,3 +310,4 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+/junit/test-results.xml
