@@ -8,21 +8,52 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  vmImageName: 'ubuntu-latest'
 
-jobs:
-- deployment: scheduled_task
-  displayName: Deploy script as scheduled task  
-  environment:
-    name: Development
-    resourceType: VirtualMachine
-    tags: development
-  strategy:
-   runOnce:
-     deploy:
+variables:
+  workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+stages:
+- stage: Test
+  displayName: Code Tests
+  jobs:
+    - job: Test
+      displayName: Code Tests
+      pool:
+        vmImage: $(vmImageName)
       steps:
-        - task: Bash@3
+        - task: UsePythonVersion@0
           inputs:
-            targetType: inline
-            script: |
-              # Hello world
-              hostnamectl
+            versionSpec: 3.8
+            addToPath: true
+            architecture: x64
+
+        - bash: |
+            pip install pytest
+            pip instal pytest-cov
+            pip install faker
+          workingDirectory: $(workingDirectory)
+          displayName: Install pytest
+
+        - bash: |
+            pip install -r requirements.txt
+          workingDirectory: $(workingDirectory)
+          displayName: Install project requirements for tests
+
+        - bash: |
+            pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+          workingDirectory: $(workingDirectory)
+          displayName: Test with pytest
+
+        - task: PublishTestResults@2
+          condition: succeededOrFailed()
+          inputs:
+            testResultsFiles: '**/test-*.xml'
+            testRunTitle: 'Publish test resutls for Python $(python.version)'
+
+        - task: PublishCodeCoverageResults@1
+          inputs:
+            codeCoverageTool: Cobertura
+            summaryFileLocation: '$(workingDirectory)/**/coverage.xml'
+
+          
