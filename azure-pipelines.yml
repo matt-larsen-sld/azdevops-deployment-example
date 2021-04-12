@@ -8,10 +8,10 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-  vmImageName: 'ubuntu-latest'
 
 variables:
   workingDirectory: '$(System.DefaultWorkingDirectory)/'
+  vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Test
