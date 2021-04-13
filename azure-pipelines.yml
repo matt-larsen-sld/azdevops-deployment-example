@@ -68,23 +68,10 @@ stages:
       tags: lhit11vms
     strategy:
      runOnce:
-        preDeploy:
-          steps:
-            - bash: |
-                echo "preDeploy phase"
-                python3 -m pip install virtualenv --user --upgrade
         deploy:
           steps:
           - bash: |
               echo "deploy phase"
+              python3 -m pip install virtualenv --user --upgrade
               mkdir $(deployPath)/$(Build.BuildId)
               touch $(deployPath)/$(Build.BuildId)/text.txt
-        on:
-          failure:
-            steps:
-            - bash: |
-                echo "failed"
-          success:
-            steps:
-            - bash: |
-                echo "success"
