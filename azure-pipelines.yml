@@ -59,8 +59,6 @@ stages:
 
 - stage: Deploy
   displayName: Deployment
-  dependsOn: Build
-  condition: succeeded()
   jobs:
   - deployment: Deploy
     displayName: Deploy
@@ -74,7 +72,7 @@ stages:
           steps:
             - bash: |
                 echo "preDeploy phase"
-                python3 -m pip install virtualenv --user
+                python3 -m pip install virtualenv --user --upgrade
         deploy:
           steps:
           - bash: |
